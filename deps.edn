@@ -1,5 +1,5 @@
 {:paths ["src" "classes"]
  :aliases {:build {:extra-paths ["build"]
-                   :jvm-opts ["-Dclojure.spec.skip-macros=true"]
-                   :main-opts ["-m" "build"]}}
+                   :jvm-opts ["-Dclojure.spec.skip-macros=true"]}
+           :compile {:main-opts ["-m" "compile"]}}
  :deps {}}

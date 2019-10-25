@@ -1,25 +1,20 @@
 (ns cljfx.css
-  (:require [cljfx.css.registry :as registry]
-            [clojure.string :as str])
+  (:require [cljfx.css.registry :as registry])
   (:import [clojure.lang IFn]))
 
 (set! *warn-on-reflection* true)
 
 (defn- hydrate [m x]
   (cond
-    (or (map? x) (vector? x)) (reduce-kv #(assoc %1 %2 (hydrate m %3)) x x)
-    (set? x) (recur m (get-in m (first x)))
+    (map? x) (reduce-kv #(assoc %1 %2 (hydrate m %3)) x x)
+    (vector? x) (recur m (get-in m x))
+    (sequential? x) (map #(hydrate m %) x)
     :else x))
 
 (defn- write-val [^StringBuilder acc x]
   (cond
     (keyword? x) (.append acc (name x))
-    (vector? x) (let [*started (volatile! false)]
-                  (doseq [x x]
-                    (if @*started
-                      (.append acc " ")
-                      (vreset! *started true))
-                    (write-val acc x)))
+    (sequential? x) (run! #(write-val acc %) x)
     :else (.append acc (str x))))
 
 (defn- write [^StringBuilder acc path m]
@@ -57,8 +52,3 @@
   (let [css (cond-> css (not (instance? Css css)) make)]
     (swap! registry/*registry assoc id css)
     css))
-
-
-#_(println ((make '{:palette {:main "#ccc"}
-                    ".list-view" {":selected" {:-fx-padding [0 0 0 #{[:palette :main]} :red] ;; oops!
-                                               :-fx-text-fill #{[:palette :main]}}}})))
