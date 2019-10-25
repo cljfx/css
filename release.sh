@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 clj -A:build:compile
 clj -Spom
 clj -A:depstar css.jar

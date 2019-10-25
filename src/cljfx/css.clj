@@ -33,7 +33,7 @@
     (.append acc "}\n")
     (write acc path v)))
 
-(defrecord Css []
+(defrecord Style []
   IFn
   (invoke [this]
     (let [acc (StringBuilder.)]
@@ -42,13 +42,46 @@
   (invoke [this x]
     (hydrate this x)))
 
-(defn make [m]
-  (map->Css (hydrate m m)))
+(defn make
+  "Create Style from passed map
 
-(defn url [id]
-  (str "cljfx-css:?" (symbol id) "#" (hash (id @registry/*registry))))
+  Style is a both a map that can be used as a source of style information for desktop
+  application, and a definition of a cascading style sheet
 
-(defn register [id css]
-  (let [css (cond-> css (not (instance? Css css)) make)]
+  Passed map recursively replaces all vectors in it in a value position with values from
+  this map using `get-in` to reduce repetition in style definition, for example:
+  ```
+  (make {:padding {:big 10} \".dialog\" {:-fx-padding [:padding :big]}})
+  => {:padding {:big 10} \".dialog\" {:-fx-padding 10}}
+  ```
+
+  Cascading style sheet is defined by recursively concatenating string keys starting from
+  root to define selectors and then using keyword keys in associated maps to define rules:
+  ```
+  ((make {\".button\" {:-fx-text-fill \"#aaa\" \":hover\" {:-fx-text-fill \"#ccc\"}}}))
+  => .button {
+       -fx-text-fill: #aaa;
+     }
+     .button:hover {
+       -fx-text-fill: #ccc;
+     }
+  ```
+
+  Style has different invocation semantics:
+  - when invoked with 0 args, returns it's cascading style sheet as string
+  - when invoked with 1 arg, replaces all vector refs in passed data structure with values
+  from this style map"
+  [m]
+  (map->Style (hydrate m m)))
+
+(defn register
+  "Globally register Style produced from passed map with associated keyword identifier"
+  [id m]
+  (let [css (make m)]
     (swap! registry/*registry assoc id css)
     css))
+
+(defn url
+  "Returns an url string that will load associated Style's cascading style sheet"
+  [id]
+  (str "cljfx-css:?" (symbol id) "#" (hash (get @registry/*registry id))))
