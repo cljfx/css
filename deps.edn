@@ -1,6 +1,7 @@
 {:paths ["src" "classes"]
  :aliases {:build {:extra-paths ["build"]
-                   :jvm-opts ["-Dclojure.spec.skip-macros=true"]}
+                   :jvm-opts ["-Dclojure.spec.skip-macros=true"]
+                   :extra-deps {org.clojure/data.xml {:mvn/version "0.2.0-alpha6"}}}
            :compile {:main-opts ["-m" "compile"]}
            :depstar {:extra-deps {seancorfield/depstar {:mvn/version "0.2.1"}}
                      :main-opts ["-m" "hf.depstar.jar"]}

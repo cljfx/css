@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 set -e
-clj -A:build:compile
+clj -A:build -m compile
+clj -A:build -m version $1
 clj -Spom
+git commit -am "Release $1"
+git tag $1
+git push
+git push origin $1
 clj -A:depstar css.jar
 printf "Clojars Username: "
 read -r username
