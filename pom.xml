@@ -16,4 +16,7 @@
     <sourceDirectory>src</sourceDirectory>
   </build>
   <repositories/>
+  <scm>
+    <url>https://github.com/cljfx/css</url>
+  </scm>
 </project>
