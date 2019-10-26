@@ -1,4 +1,4 @@
-(ns cljfx.css.registry
+(ns ^:no-doc cljfx.css.registry
   (:import [java.net URLStreamHandler URL URLConnection]
            [java.io ByteArrayInputStream]))
 
