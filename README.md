@@ -28,9 +28,8 @@ structures.
 ## Installation and requirements
 
 Latest version on Clojars:
-[![cljfx/css](https://clojars.org/cljfx/css/latest-version.svg)](https://clojars.org/cljfx/css)
 
-Minimum required cljfx version is `1.5.1`.
+[![cljfx/css](https://clojars.org/cljfx/css/latest-version.svg)](https://clojars.org/cljfx/css)
 
 ## Overview
 
