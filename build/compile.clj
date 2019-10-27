@@ -4,5 +4,5 @@
 (defn -main []
   (run! io/delete-file (reverse (rest (file-seq (io/file "classes")))))
   (.mkdir (io/file "classes"))
-  (compile 'cljfx.css.registry)
-  (println "Compiled" 'cljfx.css.registry))
+  (compile 'cljfx.css)
+  (println "Compiled" 'cljfx.css))
