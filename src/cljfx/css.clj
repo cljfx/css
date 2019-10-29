@@ -52,11 +52,13 @@
 (defn register
   "Globally register style map describing CSS with associated keyword identifier
 
+  Returns a map with added key `:cljfx.css/url` containing url string pointing to CSS
+
   CSS is created by recursively concatenating string keys starting from root to define
   selectors, while using keyword keys in value maps to define rules, for example:
   ```
   {\".button\" {:-fx-text-fill \"#ccc\"
-                \":hover\" {:-fx-text-fill \"#aaa\"}}}
+              \":hover\" {:-fx-text-fill \"#aaa\"}}}
   ;; corresponds to this css:
   .button {
     -fx-text-fill: #ccc;
@@ -66,33 +68,6 @@
   }
   ```"
   [id m]
-  (swap! *registry assoc id m)
-  m)
-
-(defn- make-url [id m]
-  (str url-protocol ":?" (symbol id) "#" (hash m)))
-
-(defn url
-  "Returns an URL string that will load registered style's CSS"
-  [id]
-  (make-url id (get @*registry id)))
-
-(defn watch
-  "Add a watch function for id that will receive new URL string and style map whenever
-  a new style map for this id is registered
-
-  `key` is a watch identifier, using it with different `f` or `id` will overwrite existing
-  watch"
-  [key id f]
-  (add-watch *registry key
-             (fn [_ _ old new]
-               (let [m (get new id)]
-                 (when-not (= m (get old id))
-                   (f (make-url id m) m)))))
-  (let [m (get @*registry id)]
-    (f (make-url id m) m)))
-
-(defn unwatch
-  "Remove a watcher defined by this `key`"
-  [key]
-  (remove-watch *registry key))
+  (let [css (assoc m ::url (str url-protocol ":?" (symbol id) "#" (hash m)))]
+    (swap! *registry assoc id css)
+    css))
