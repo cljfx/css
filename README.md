@@ -11,8 +11,8 @@ Charmingly Simple Styling for [cljfx](https://github.com/cljfx/cljfx)
 
 JavaFX is designed to use CSS files for styling. CSS has it's own set of problems such as 
 selectors unexpectedly overriding each other and having unclear priority. Because of that, 
-using inline styles is much more predictable, and with cljfx, where styles can be 
-described as maps, also composable.
+using component-specific style classes or inline styles is much more predictable and, with
+cljfx, where styles can be described as maps, also composable.
 
 Unfortunately, CSS is unavoidable, because controls don't provide access to their internal 
 nodes, and they can be targeted only with CSS selectors. What's worse, JavaFX does not 
@@ -23,9 +23,11 @@ duplication of styling information in CSS and code.
 Charmingly Simple Styling is a library and a set of recommendations that solve these 
 problems. Library provides a way to configure application style using clojure data 
 structures and then construct special URLs to load CSS for styling JavaFX nodes that is 
-derived from the same data structures. Recommendations help to setup cljfx application in 
+derived from the same data structures. Recommendations help setup cljfx application in 
 a way that allows you to rapidly iterate on styling in a live app, reapplying all styles 
 with a single form evaluation.
+
+TODO mention that not everything can be styled
 
 ## Installation and requirements
 
@@ -113,14 +115,13 @@ That's it: you define styles, register them and feed constructed URL to JavaFX.
 
 ## Recommendations
 
-### Importance of CSS definition order
+### Don't rely on priority rules
 
 CSS has confusing priority rules, which, when relied upon, usually results in CSS files 
 becoming append only with more and more overrides. In Charmingly Simple Styling, on the 
 other hand, style maps are unordered, which means resulted CSS selectors are emitted in 
-undefined order. I consider this an incentive to not rely on overriding possibilities of 
-CSS, and instead just create different CSS classes for different purposes and then
-switching them in an application.
+undefined order. That's made intentionally to promote a more reasonable approach: create 
+different CSS classes for different purposes and then switch between them.
 
 For example, instead of this:
 ```clojure
@@ -158,11 +159,20 @@ You should use this:
                :text text}]})
 ```
 
-### CSS selectors
+### Watch for changes while iterating on styles
+
+TODO watch + css reference + modena.css
+
+### Be careful with indirect children CSS selector
 
 TODO
+https://wiki.openjdk.java.net/display/OpenJFX/Performance+Tips+and+Tricks
+CSS:
+- Avoid selectors that have to match against the entire set of parents
+- Use stylesheets not setStyles
+- Use pseudo-class state, not multiple style classes, for state-based styles (FX 8)
 
-### Instant reload
+### Prefer custom classes instead of JavaFX ones
 
 TODO
 
