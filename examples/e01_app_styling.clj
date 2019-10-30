@@ -6,66 +6,65 @@
 (def style
   (css/register ::style
     (let [base-color "#222"
-          palette {:app.palette/text base-color
-                   :app.palette/help (str base-color "8")
-                   :app.palette/border (str base-color "4")
-                   :app.palette/shadow (str base-color "3")
-                   :app.palette/focus (str base-color "8")
-                   :app.palette/control "#fff"
-                   :app.palette/control-hover "#f4f4f4"
-                   :app.palette/background "#eee"}
-          layout {:app.layout/spacing 10
-                  :app.layout/scroll-bar-size 9
-                  :app.layout/padding 20
-                  :app.layout/corner 5
-                  :app.layout/label-padding "2px 4px"}
+          style {:app.style/text-color base-color
+                 :app.style/help-color (str base-color "8")
+                 :app.style/border-color (str base-color "4")
+                 :app.style/shadow-color (str base-color "3")
+                 :app.style/focus-color (str base-color "8")
+                 :app.style/control-color "#fff"
+                 :app.style/control-hover-color "#f4f4f4"
+                 :app.style/background-color "#eee"
+                 :app.style/spacing 10
+                 :app.style/scroll-bar-size 9
+                 :app.style/padding 20
+                 :app.style/corner-size 5
+                 :app.style/label-padding "2px 4px"}
           text (fn [size weight]
-                 {:-fx-text-fill (:app.palette/text palette)
+                 {:-fx-text-fill (:app.style/text-color style)
                   :-fx-wrap-text true
                   :-fx-font-weight weight
                   :-fx-font-size size})
           control-shadow (format "dropshadow(gaussian, %s, 5, 0, 0, 1)"
-                                 (:app.palette/shadow palette))
+                                 (:app.style/shadow-color style))
           inner-shadow (format "innershadow(gaussian, %s, 5, 0, 0, 2)"
-                               (:app.palette/shadow palette))
+                               (:app.style/shadow-color style))
           hover-shadow (format "dropshadow(gaussian, %s, 7, 0, 0, 2)"
-                               (:app.palette/shadow palette))
+                               (:app.style/shadow-color style))
           armed-shadow (format "dropshadow(gaussian, %s, 3, 0, 0, 1)"
-                               (:app.palette/shadow palette))
-          border {:-fx-border-color (:app.palette/border palette)
-                  :-fx-background-color (:app.palette/control palette)
-                  :-fx-border-radius (:app.layout/corner layout)
-                  :-fx-background-radius (:app.layout/corner layout)}
+                               (:app.style/shadow-color style))
+          border {:-fx-border-color (:app.style/border-color style)
+                  :-fx-background-color (:app.style/control-color style)
+                  :-fx-border-radius (:app.style/corner-size style)
+                  :-fx-background-radius (:app.style/corner-size style)}
           button (merge
                    (text 13 :normal)
                    border
-                   {:-fx-padding (:app.layout/label-padding layout)
+                   {:-fx-padding (:app.style/label-padding style)
                     :-fx-effect control-shadow
-                    ":focused" {:-fx-border-color (:app.palette/focus palette)}
+                    ":focused" {:-fx-border-color (:app.style/focus-color style)}
                     ":hover" {:-fx-effect hover-shadow
-                              :-fx-background-color (:app.palette/control-hover palette)}
+                              :-fx-background-color (:app.style/control-hover-color style)}
                     ":armed" {:-fx-effect armed-shadow}})]
       (merge
-        palette
-        layout
+        style
         {".app-" {"label" (text 13 :normal)
                   "header" (text 20 :bold)
                   "sub-header" (text 16 :bold)
                   "code" (merge
                            (text 13 :normal)
                            {:-fx-font-family "monospace"
-                            :-fx-padding (:app.layout/padding layout)})
-                  "container" {:-fx-spacing (:app.layout/spacing layout)}
-                  "root" {:-fx-padding (:app.layout/padding layout)
-                          :-fx-background-color (:app.palette/background palette)}
+                            :-fx-padding (:app.style/spacing style)})
+                  "container" {:-fx-spacing (:app.style/spacing style)}
+                  "root" {:-fx-padding (:app.style/padding style)
+                          :-fx-background-color (:app.style/background-color style)}
                   "button-" {"primary" button
                              "secondary" button}
-                  "check-box" {:-fx-text-fill (:app.palette/text palette)
+                  "check-box" {:-fx-text-fill (:app.style/text-color style)
                                :-fx-label-padding (format "0 0 0 %spx"
-                                                          (:app.layout/spacing layout))
-                               ":focused > .box" {:-fx-border-color (:app.palette/focus palette)}
+                                                          (:app.style/spacing style))
+                               ":focused > .box" {:-fx-border-color (:app.style/focus-color style)}
                                ":hover > . box" {:-fx-effect hover-shadow
-                                                 :-fx-background-color (:app.palette/control-hover palette)}
+                                                 :-fx-background-color (:app.style/control-hover-color style)}
                                ":armed > .box" {:-fx-effect armed-shadow}
                                "> .box" (merge
                                           border
@@ -73,33 +72,33 @@
                                            :-fx-padding "3px 2px"
                                            "> .mark" {:-fx-padding "5px 6px"
                                                       :-fx-shape "'M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z'"}})
-                               ":selected > .box > .mark" {:-fx-background-color (:app.palette/text palette)}}
+                               ":selected > .box > .mark" {:-fx-background-color (:app.style/text-color style)}}
                   "text-field" (merge
                                  (text 13 :normal)
                                  border
-                                 {:-fx-highlight-fill (:app.palette/text palette)
-                                  :-fx-padding (:app.layout/label-padding layout)
-                                  :-fx-prompt-text-fill (:app.palette/help palette)
-                                  :-fx-highlight-text-fill (:app.palette/background palette)
+                                 {:-fx-highlight-fill (:app.style/text-color style)
+                                  :-fx-padding (:app.style/label-padding style)
+                                  :-fx-prompt-text-fill (:app.style/help-color style)
+                                  :-fx-highlight-text-fill (:app.style/background-color style)
                                   :-fx-effect inner-shadow
-                                  ":focused" {:-fx-border-color (:app.palette/focus palette)}})}
+                                  ":focused" {:-fx-border-color (:app.style/focus-color style)}})}
          ".scroll-pane" (merge
                           border
                           {:-fx-effect inner-shadow
                            :-fx-focus-traversable true
-                           ":focused" {:-fx-border-color (:app.palette/focus palette)
+                           ":focused" {:-fx-border-color (:app.style/focus-color style)
                                        :-fx-background-insets 0}
-                           "> .viewport" {:-fx-background-color (:app.palette/control palette)}
+                           "> .viewport" {:-fx-background-color (:app.style/control-color style)}
                            "> .corner" {:-fx-background-color :transparent}})
          ".scroll-bar" {:-fx-background-color :transparent
-                        "> .thumb" {:-fx-background-color (:app.palette/focus palette)
-                                    :-fx-background-radius (:app.layout/scroll-bar-size layout)
+                        "> .thumb" {:-fx-background-color (:app.style/focus-color style)
+                                    :-fx-background-radius (:app.style/scroll-bar-size style)
                                     :-fx-background-insets 1
-                                    ":pressed" {:-fx-background-color (:app.palette/text palette)}}
-                        ":horizontal" {"> .increment-button > .increment-arrow" {:-fx-pref-height (:app.layout/scroll-bar-size layout)}
-                                       "> .decrement-button > .decrement-arrow" {:-fx-pref-height (:app.layout/scroll-bar-size layout)}}
-                        ":vertical" {"> .increment-button > .increment-arrow" {:-fx-pref-width (:app.layout/scroll-bar-size layout)}
-                                     "> .decrement-button > .decrement-arrow" {:-fx-pref-width (:app.layout/scroll-bar-size layout)}}
+                                    ":pressed" {:-fx-background-color (:app.style/text-color style)}}
+                        ":horizontal" {"> .increment-button > .increment-arrow" {:-fx-pref-height (:app.style/scroll-bar-size style)}
+                                       "> .decrement-button > .decrement-arrow" {:-fx-pref-height (:app.style/scroll-bar-size style)}}
+                        ":vertical" {"> .increment-button > .increment-arrow" {:-fx-pref-width (:app.style/scroll-bar-size style)}
+                                     "> .decrement-button > .decrement-arrow" {:-fx-pref-width (:app.style/scroll-bar-size style)}}
                         "> .decrement-button" {:-fx-padding 0
                                                "> .decrement-arrow" {:-fx-shape nil
                                                                      :-fx-padding 0}}
@@ -114,9 +113,9 @@
 (comment
   ;; to iterate during development on style, add a watch to var that updates style in app
   ;; state...
-  (add-watch #'style :render (fn [_ _ _ _] (swap! *state assoc :style style)))
+  (add-watch #'style :refresh-app (fn [_ _ _ _] (swap! *state assoc :style style)))
   ;; ... and remove it when you are done
-  (remove-watch #'style :render))
+  (remove-watch #'style :refresh-app))
 
 (def renderer
   (fx/create-renderer

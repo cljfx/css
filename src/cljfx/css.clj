@@ -16,6 +16,7 @@
 (defn- write-val [^StringBuilder acc x]
   (cond
     (instance? Named x) (.append acc (name x))
+    (vector? x) (transduce (interpose " ") (completing #(write-val acc %2)) nil x)
     (sequential? x) (run! #(write-val acc %) x)
     :else (.append acc x)))
 
@@ -35,14 +36,12 @@
     (.append acc "}\n")
     (write acc path v)))
 
-(def ^:private url-protocol "cljfx-css")
 
 (defn- -createURLStreamHandler [this protocol]
-  (when (= protocol url-protocol)
+  (when (= protocol "cljfx-css")
     (proxy [URLStreamHandler] []
       (openConnection [^URL url]
         (proxy [URLConnection] [url]
-          (connect [])
           (getInputStream []
             (let [style (get @*registry (keyword (.getQuery url)))
                   acc (StringBuilder.)]
@@ -52,7 +51,8 @@
 (defn register
   "Globally register style map describing CSS with associated keyword identifier
 
-  Returns a map with added key `:cljfx.css/url` containing url string pointing to CSS
+  Returns a map with additional key `:cljfx.css/url` containing URL string pointing to CSS
+  derived from style map
 
   CSS is created by recursively concatenating string keys starting from root to define
   selectors, while using keyword keys in value maps to define rules, for example:
@@ -68,6 +68,6 @@
   }
   ```"
   [id m]
-  (let [css (assoc m ::url (str url-protocol ":?" (symbol id) "#" (hash m)))]
+  (let [css (assoc m ::url (str "cljfx-css:?" (symbol id) "#" (hash m)))]
     (swap! *registry assoc id css)
     css))
