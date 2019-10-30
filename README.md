@@ -187,12 +187,26 @@ There are also 2 resources I found very important when developing application st
 
 ### Be careful with indirect children CSS selector
 
-TODO
-https://wiki.openjdk.java.net/display/OpenJFX/Performance+Tips+and+Tricks
-CSS:
+Some selectors are very easy and straightforward to write using style maps:
+```clojure
+{".style-class" {:-fx-background-color :red
+                 "> .direct-child" {:-fx-text-fill :green
+                                    ":pseudo-class" {:-fx-text-fill :blue}}}}
+```
+There is another type of selectors that looks ugly written that way:
+```clojure
+{".style-class" {:-fx-background-color :red 
+                 ;; ugly string starting with space, boo!
+                 " .indirect-child" {:-fx-text-fill :green}}}
+```
+This should serve as a reminder that such selectors are bad for application performance,
+since JavaFX has to look through all parents of a every Node with class `.indirect-child`
+to see if such selector applies. As JavaFX's wiki states on it's [Performance Tips and 
+Tricks](https://wiki.openjdk.java.net/display/OpenJFX/Performance+Tips+and+Tricks) page, 
+you should follow these rules when doing CSS:
 - Avoid selectors that have to match against the entire set of parents
 - Use stylesheets not setStyles
-- Use pseudo-class state, not multiple style classes, for state-based styles (FX 8)
+- Use pseudo-class state, not multiple style classes, for state-based styles
 
 ### Prefer custom classes instead of JavaFX ones
 
