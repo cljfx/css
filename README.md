@@ -11,23 +11,23 @@ Charmingly Simple Styling for [cljfx](https://github.com/cljfx/cljfx)
 
 JavaFX is designed to use CSS files for styling. CSS has it's own set of problems such as 
 selectors unexpectedly overriding each other and having unclear priority. Because of that, 
-using component-specific style classes or inline styles is much more predictable and, with
-cljfx, where styles can be described as maps, also composable.
+inline styles are more predictable and, with cljfx, where styles can be described as maps, 
+also more composable.
 
 Unfortunately, CSS is unavoidable, because controls don't provide access to their internal 
 nodes, and they can be targeted only with CSS selectors. What's worse, JavaFX does not 
 allow loading CSS from strings or some other data structures, instead expecting an URL 
-pointing to a CSS file. This leads to slow iteration cycle on styling and also to 
-duplication of styling information in CSS and code.
+pointing to a CSS file. In addition to that, CSS is not always enough for styling JavaFX 
+application: not every Node is styleable (for example, Shapes aren't). All this leads to
+slow iteration cycle on styling and also to duplication of styling information in CSS and 
+code.
 
 Charmingly Simple Styling is a library and a set of recommendations that solve these 
 problems. Library provides a way to configure application style using clojure data 
 structures and then construct special URLs to load CSS for styling JavaFX nodes that is 
 derived from the same data structures. Recommendations help setup cljfx application in 
-a way that allows you to rapidly iterate on styling in a live app, reapplying all styles 
-with a single form evaluation.
-
-TODO mention that not everything can be styled
+a way that allows you to rapidly iterate on styling in a live app and keep some sanity in 
+the world of CSS.
 
 ## Installation and requirements
 
@@ -79,10 +79,10 @@ style
     ".button" {:-fx-text-fill "#111111",
                :-fx-padding ["4px" "8px"],
                ":hover" {:-fx-text-fill :black}},
-    ;; URL has stringified version of keyword in query part of URL, and hash of a style map 
-    ;; in a fragment part. Query part is used to lookup style map in a global registry, and
-    ;; fragment is used to indicate that style is changed when it's redefined to trigger CSS
-    ;; reload in JavaFX
+    ;; URL has stringified version of keyword in query part of URL, and a hash of a style 
+    ;; map in a fragment part. Query part is used to lookup style map in a global 
+    ;; registry, and fragment is used to indicate that style is changed when it's 
+    ;; redefined to trigger CSS reload in JavaFX
     :cljfx.css/url "cljfx-css:?my-app.style/style#-1561130535"}
 
 ;; let's see how loaded CSS looks like:
@@ -161,7 +161,29 @@ You should use this:
 
 ### Watch for changes while iterating on styles
 
-TODO watch + css reference + modena.css
+Usually styles are static during the application runtime, but when you develop application
+styling, it's very important to see your changes immediately. To achieve that with 
+Charmingly Simple Styling, you need to take 2 steps:
+- put registered style into application state, so re-registered style can be picked up on
+  next render;
+- watch for changes in registered style and update it in app state.
+
+When putting style in an app state, it might be useful to also put it into component 
+environment with `fx/ext-set-env`, so you can access it easily. See 
+[`ext-set-env`/`ext-get-env` section](https://github.com/cljfx/cljfx#extending-cljfx) in 
+cljfx's manual. 
+
+When you keep style `def`ed in a Var, you can just add a watch to that var that updates
+style in an app state to achieve instant reload. 
+See [example](examples/e01_instant_restyling.clj) — it contains a style definition and 
+a rich comment that you can use to start and stop watching for changes in style to 
+instantly reapply styles in an app.  
+
+There are also 2 resources I found very important when developing application styling:
+- Official JavaFX [CSS reference](https://openjfx.io/javadoc/12/javafx.graphics/javafx/scene/doc-files/cssref.html) —
+  to see what you can style with CSS
+- [modena.css](https://gist.github.com/maxd/63691840fc372f22f470) — default CSS used by 
+  JavaFX, helpful when documentation is not enough
 
 ### Be careful with indirect children CSS selector
 

@@ -1,4 +1,4 @@
-(ns e01-app-styling
+(ns e01-instant-restyling
   (:require [cljfx.css :as css]
             [clojure.pprint :as pprint]
             [cljfx.api :as fx]))
