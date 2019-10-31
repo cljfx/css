@@ -222,10 +222,10 @@ page, you should follow these rules when doing CSS:
 ## Prefer custom style classes
 
 It might be tempting to use `label` class so it's applied automatically to all labels 
-without a need to specify your own class. Unfortunately, it means that you will have to 
-override all default styles from modena.css, because it also targets `label` class. I 
+without a need to specify their style class. Unfortunately, it means that you will have to 
+fight with default styles from modena.css, because it also targets `label` class. I 
 think styling is more straightforward when you set your own style class on labels and 
-don't have to worry about unexpected insets or paddings that might affect your layout.
+don't have to worry about disabling unexpected insets or paddings.
 
 Alternatively, you can set CSS url globally with `Application/setUserAgentStylesheet`, but 
 that means you'll have to provide CSS for every element in an app. 
