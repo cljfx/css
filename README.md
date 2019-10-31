@@ -115,6 +115,32 @@ That's it: you define styles, register them and feed constructed URL to JavaFX.
 
 ## Recommendations
 
+### Watch for changes while iterating on styles
+
+Usually styles are static during the application runtime, but when you develop application
+styling, it's very important to see your changes immediately. To achieve that with 
+Charmingly Simple Styling, you need to take 2 steps:
+- put registered style into application state, so re-registered style can be picked up on
+  next render;
+- watch for changes in registered style and update it in app state.
+
+When putting style in an app state, it might be useful to also put it into component 
+environment with `fx/ext-set-env`, so you can access it easily. See 
+[`ext-set-env`/`ext-get-env` section](https://github.com/cljfx/cljfx#extending-cljfx) in 
+cljfx's manual. 
+
+When you keep style `def`ed in a Var, you can just add a watch to that var that updates
+style in an app state to achieve instant reload. 
+See [example](examples/e01_instant_restyling.clj) — it contains a style definition and 
+a rich comment that you can use to start and stop watching for changes in style to 
+instantly reapply styles in an app.  
+
+There are also 2 resources I found invaluable while iterating on application styling:
+- Official JavaFX [CSS reference](https://openjfx.io/javadoc/12/javafx.graphics/javafx/scene/doc-files/cssref.html) —
+  to see what you can style with CSS
+- [modena.css](https://gist.github.com/maxd/63691840fc372f22f470) — default CSS used by 
+  JavaFX, helpful when documentation is not enough
+
 ### Don't rely on priority rules
 
 CSS has confusing priority rules, which, when relied upon, usually results in CSS files 
@@ -159,32 +185,6 @@ You should use this:
                :text text}]})
 ```
 
-### Watch for changes while iterating on styles
-
-Usually styles are static during the application runtime, but when you develop application
-styling, it's very important to see your changes immediately. To achieve that with 
-Charmingly Simple Styling, you need to take 2 steps:
-- put registered style into application state, so re-registered style can be picked up on
-  next render;
-- watch for changes in registered style and update it in app state.
-
-When putting style in an app state, it might be useful to also put it into component 
-environment with `fx/ext-set-env`, so you can access it easily. See 
-[`ext-set-env`/`ext-get-env` section](https://github.com/cljfx/cljfx#extending-cljfx) in 
-cljfx's manual. 
-
-When you keep style `def`ed in a Var, you can just add a watch to that var that updates
-style in an app state to achieve instant reload. 
-See [example](examples/e01_instant_restyling.clj) — it contains a style definition and 
-a rich comment that you can use to start and stop watching for changes in style to 
-instantly reapply styles in an app.  
-
-There are also 2 resources I found very important when developing application styling:
-- Official JavaFX [CSS reference](https://openjfx.io/javadoc/12/javafx.graphics/javafx/scene/doc-files/cssref.html) —
-  to see what you can style with CSS
-- [modena.css](https://gist.github.com/maxd/63691840fc372f22f470) — default CSS used by 
-  JavaFX, helpful when documentation is not enough
-
 ### Be careful with indirect children CSS selector
 
 Some selectors are very easy and straightforward to write using style maps:
@@ -200,10 +200,10 @@ There is another type of selectors that looks ugly written that way:
                  " .indirect-child" {:-fx-text-fill :green}}}
 ```
 This should serve as a reminder that such selectors are bad for application performance,
-since JavaFX has to look through all parents of a every Node with class `.indirect-child`
-to see if such selector applies. As JavaFX's wiki states on it's [Performance Tips and 
-Tricks](https://wiki.openjdk.java.net/display/OpenJFX/Performance+Tips+and+Tricks) page, 
-you should follow these rules when doing CSS:
+since JavaFX has to look through all parents of a every Node with class `indirect-child`
+to see if it has `style-class` class to figure out if selector applies. As JavaFX's wiki 
+states on it's [Performance Tips and Tricks](https://wiki.openjdk.java.net/display/OpenJFX/Performance+Tips+and+Tricks) 
+page, you should follow these rules when doing CSS:
 - Avoid selectors that have to match against the entire set of parents
 - Use stylesheets not setStyles
 - Use pseudo-class state, not multiple style classes, for state-based styles
