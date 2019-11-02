@@ -47,19 +47,19 @@
                     ":armed" {:-fx-effect armed-shadow}})]
       (merge
         style
-        {".app-" {"label" (text 13 :normal)
-                  "header" (text 20 :bold)
-                  "sub-header" (text 16 :bold)
-                  "code" (merge
+        {".app" {"-label" (text 13 :normal)
+                 "-header" (text 20 :bold)
+                 "-sub-header" (text 16 :bold)
+                 "-code" (merge
                            (text 13 :normal)
                            {:-fx-font-family "monospace"
                             :-fx-padding (:app.style/spacing style)})
-                  "container" {:-fx-spacing (:app.style/spacing style)}
-                  "root" {:-fx-padding (:app.style/padding style)
+                 "-container" {:-fx-spacing (:app.style/spacing style)}
+                 "-root" {:-fx-padding (:app.style/padding style)
                           :-fx-background-color (:app.style/background-color style)}
-                  "button-" {"primary" button
-                             "secondary" button}
-                  "check-box" {:-fx-text-fill (:app.style/text-color style)
+                 "-button" {"-primary" button
+                            "-secondary" button}
+                 "-check-box" {:-fx-text-fill (:app.style/text-color style)
                                :-fx-label-padding (format "0 0 0 %spx"
                                                           (:app.style/spacing style))
                                ":focused > .box" {:-fx-border-color (:app.style/focus-color style)}
@@ -73,7 +73,7 @@
                                            "> .mark" {:-fx-padding "5px 6px"
                                                       :-fx-shape "'M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z'"}})
                                ":selected > .box > .mark" {:-fx-background-color (:app.style/text-color style)}}
-                  "text-field" (merge
+                 "-text-field" (merge
                                  (text 13 :normal)
                                  border
                                  {:-fx-highlight-fill (:app.style/text-color style)
