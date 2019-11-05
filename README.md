@@ -1,4 +1,4 @@
-WIP, do not use yet
+![Logo](doc/logo.png)
 
 [![Cljdoc documentation](https://cljdoc.org/badge/cljfx/css)](https://cljdoc.org/jump/release/cljfx/css) 
 [![Clojars Project](https://img.shields.io/clojars/v/cljfx/css.svg)](https://clojars.org/cljfx/css)
